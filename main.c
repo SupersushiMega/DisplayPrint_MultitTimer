@@ -164,8 +164,6 @@ int main(void)
 	
 	char buffer[20];	//Buffer for PlotString function
 	
-	uint8_t isPushed = 0;
-	
 	//Task Declaration
 	//==================================================================
 	struct Task AufgabenLesen;
@@ -223,12 +221,14 @@ int main(void)
 	Vorfueren.Colour[2] = 255;	//Blue Value of Task
 	//==================================================================
 	
+	//Variable Declaration
+	//==================================================================
 	const uint8_t BarWidth = 10;	//Width of Total Bar
 	const uint8_t BarHeight = 100;	//Height of Total Bar
 	
 	const uint8_t TaskCount = 6;	//Number of Tasks
 	
-	uint8_t PosY = 0;	//Vertical osition
+	uint8_t PosY = 0;	//Variable vertical position
 	
 	uint32_t TotalTime = 0;	//Variable used to store duration of all Tasks in total
 	uint32_t LastTime = 1;	//Variable to used to check if Time Variable has Changed
@@ -237,7 +237,8 @@ int main(void)
 	uint32_t temp = 0; //Variable used for temporary data storage
 	
 	struct Task TaskList[] = {AufgabenLesen, Messprotokoll, Struktogram, Codieren, Testen, Vorfueren};	//Array of all Tasks
-	
+	//==================================================================
+
 	//Draw Glowing Cirlce
 	//==================================================================
 	for(count1 = 0; count1 < 40; count1++)
@@ -280,13 +281,13 @@ int main(void)
 	count1 = -1;	//Set count1 to -1
 	target = 0;	//Set target to 0
 	
-	IsPaused = 1;
+	IsPaused = 1;	//Ensure Timer is paused
 	Time = 0;	//Set Time to 0
 	
 	while(!T1 && !T2 && !T3);	//Wait for user Input before starting Timer
 	
 	while (1)
-	{
+	{	
 		if(Time != LastTime)	//Check if Display needs to be updated
 		{
 			LastTime = Time;	//Set LastTime equal to Time
