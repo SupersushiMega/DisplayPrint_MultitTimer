@@ -68,8 +68,8 @@ ISR (TIMER1_COMPA_vect);
 
 volatile uint8_t ISR_zaehler = 0;
 volatile uint8_t ms100 = 0;
-volatile uint32_t Time = 0;
-volatile uint8_t IsPaused = 1;
+volatile uint32_t Time = 0;	//Variable to store the amount of tima that has passed since the start of the Timer
+volatile uint8_t IsPaused = 1;	//Variable used for Pausing and upausig the Timer
 ISR (TIMER0_OVF_vect)
 {
 	if (IsPaused == 0)
@@ -99,10 +99,10 @@ void SPI_MasterTransmit(uint8_t cData)
 
 struct Task
 {
-	uint8_t time[3];
-	uint8_t Colour[3];
-	uint32_t Seconds;
-	char Name[20];
+	uint8_t time[3];	//Time in {Hour, Minute, Second} format
+	uint8_t Colour[3];	//Color in {R,G,B} format
+	uint32_t Seconds;	//Time in Seconds
+	char Name[20];	//Displayed name of Task
 };
 
 int main(void)
@@ -162,158 +162,192 @@ int main(void)
 	uint16_t count1;	//Variable used for Counting in for loops
 	uint16_t count2;	//Variable used for Counting in for loops
 	
-	char buffer[20];
+	char buffer[20];	//Buffer for PlotString function
 	
 	uint8_t isPushed = 0;
 	
+	//Task Declaration
+	//==================================================================
 	struct Task AufgabenLesen;
-	strcpy(AufgabenLesen.Name,"AufgabenLesen");
-	AufgabenLesen.time[0] = 0;
-	AufgabenLesen.time[1] = 15;
-	AufgabenLesen.time[2] = 0;
-	AufgabenLesen.Colour[0] = 0;
-	AufgabenLesen.Colour[1] = 255;
-	AufgabenLesen.Colour[2] = 0;
+	strcpy(AufgabenLesen.Name,"Aufgaben Lesen");	//Name shown on display
+	AufgabenLesen.time[0] = 0;	//Duration of task in hours
+	AufgabenLesen.time[1] = 15;	//Duration of task in minutes
+	AufgabenLesen.time[2] = 0;	//Duration of task in seconds
+	AufgabenLesen.Colour[0] = 0;	//Red Value of Task
+	AufgabenLesen.Colour[1] = 255;	//Green Value of Task
+	AufgabenLesen.Colour[2] = 0;	//Blue Value of Task
 	
 	struct Task Messprotokoll;
-	strcpy(Messprotokoll.Name,"Messprotokoll");
-	Messprotokoll.time[0] = 0;
-	Messprotokoll.time[1] = 30;
-	Messprotokoll.time[2] = 0;
-	Messprotokoll.Colour[0] = 255;
-	Messprotokoll.Colour[1] = 255;
-	Messprotokoll.Colour[2] = 0;
+	strcpy(Messprotokoll.Name,"Messprotokoll");	//Name shown on display
+	Messprotokoll.time[0] = 0;	//Duration of task in hours
+	Messprotokoll.time[1] = 30;	//Duration of task in minutes
+	Messprotokoll.time[2] = 0;	//Duration of task in seconds
+	Messprotokoll.Colour[0] = 255;	//Red Value of Task
+	Messprotokoll.Colour[1] = 255;	//Green Value of Task
+	Messprotokoll.Colour[2] = 0;	//Blue Value of Task
 	
 	struct Task Struktogram;
-	strcpy(Struktogram.Name,"Struktogram");
-	Struktogram.time[0] = 0;
-	Struktogram.time[1] = 45;
-	Struktogram.time[2] = 0;
-	Struktogram.Colour[0] = 0;
-	Struktogram.Colour[1] = 255;
-	Struktogram.Colour[2] = 255;
+	strcpy(Struktogram.Name,"Struktogram");	//Name shown on display
+	Struktogram.time[0] = 0;	//Duration of task in hours
+	Struktogram.time[1] = 45;	//Duration of task in minutes
+	Struktogram.time[2] = 0;	//Duration of task in seconds
+	Struktogram.Colour[0] = 0;	//Red Value of Task
+	Struktogram.Colour[1] = 255;	//Green Value of Task
+	Struktogram.Colour[2] = 255;	//Blue Value of Task
 	
 	struct Task Codieren;
-	strcpy(Codieren.Name,"Codieren");
-	Codieren.time[0] = 0;
-	Codieren.time[1] = 30;
-	Codieren.time[2] = 0;
-	Codieren.Colour[0] = 0;
-	Codieren.Colour[1] = 0;
-	Codieren.Colour[2] = 255;
+	strcpy(Codieren.Name,"Codieren");	//Name shown on display
+	Codieren.time[0] = 0;	//Duration of task in hours
+	Codieren.time[1] = 30;	//Duration of task in minutes
+	Codieren.time[2] = 0;	//Duration of task in seconds
+	Codieren.Colour[0] = 0;	//Red Value of Task
+	Codieren.Colour[1] = 0;	//Green Value of Task
+	Codieren.Colour[2] = 255;	//Blue Value of Task
 	
 	struct Task Testen;
-	strcpy(Testen.Name,"Testen");
-	Testen.time[0] = 0;
-	Testen.time[1] = 30;
-	Testen.time[2] = 0;
-	Testen.Colour[0] = 255;
-	Testen.Colour[1] = 0;
-	Testen.Colour[2] = 0;
+	strcpy(Testen.Name,"Testen");	//Name shown on display
+	Testen.time[0] = 0;	//Duration of task in hours
+	Testen.time[1] = 30;	//Duration of task in minutes
+	Testen.time[2] = 0;	//Duration of task in seconds
+	Testen.Colour[0] = 255;	//Red Value of Task
+	Testen.Colour[1] = 0;	//Green Value of Task
+	Testen.Colour[2] = 0;	//Blue Value of Task
 	
 	struct Task Vorfueren;
-	strcpy(Vorfueren.Name,"Vorfueren");
-	Vorfueren.time[0] = 0;
-	Vorfueren.time[1] = 30;
-	Vorfueren.time[2] = 0;
-	Vorfueren.Colour[0] = 255;
-	Vorfueren.Colour[1] = 255;
-	Vorfueren.Colour[2] = 255;
+	strcpy(Vorfueren.Name,"Vorfueren");	//Name shown on display
+	Vorfueren.time[0] = 0;	//Duration of task in hours
+	Vorfueren.time[1] = 30;	//Duration of task in minutes
+	Vorfueren.time[2] = 0;	//Duration of task in seconds
+	Vorfueren.Colour[0] = 255;	//Red Value of Task
+	Vorfueren.Colour[1] = 255;	//Green Value of Task
+	Vorfueren.Colour[2] = 255;	//Blue Value of Task
+	//==================================================================
 	
-	const uint8_t BarWidth = 10;
-	const uint8_t BarHeight = 100;
+	const uint8_t BarWidth = 10;	//Width of Total Bar
+	const uint8_t BarHeight = 100;	//Height of Total Bar
 	
-	const uint8_t TaskCount = 6;
+	const uint8_t TaskCount = 6;	//Number of Tasks
 	
-	uint8_t PosY = 0;
+	uint8_t PosY = 0;	//Vertical osition
 	
-	uint32_t TotalTime = 0;
-	uint32_t LastTime = 1;
-	uint32_t target = 0;
+	uint32_t TotalTime = 0;	//Variable used to store duration of all Tasks in total
+	uint32_t LastTime = 1;	//Variable to used to check if Time Variable has Changed
+	uint32_t target = 0;	//Variable used to store the next target value for Time
 	
-	struct Task TaskList[] = {AufgabenLesen, Messprotokoll, Struktogram, Codieren, Testen, Vorfueren};
+	uint32_t temp = 0; //Variable used for temporary data storage
 	
+	struct Task TaskList[] = {AufgabenLesen, Messprotokoll, Struktogram, Codieren, Testen, Vorfueren};	//Array of all Tasks
+	
+	//Draw Glowing Cirlce
+	//==================================================================
 	for(count1 = 0; count1 < 40; count1++)
 	{
-		uint8_t temp = 255 * sin(((count1 * 4.5))*(M_PI/180));
-		fore = Colour(0, temp, temp);
-		glcd_draw_circle(size/1.7+1, size/2, count1);
-		glcd_draw_circle(size/1.7, size/2+1, count1);
-		glcd_draw_circle(size/1.7, size/2-1, count1);
-		glcd_draw_circle(size/1.7-1, size/2, count1);
-		glcd_draw_circle(size/1.7, size/2, count1);
+		temp = 255 * sin(((count1 * 4.5))*(M_PI/180));	//Calculate color strength
+		fore = Colour(0, temp, temp);	//Set fore Color
+		glcd_draw_circle(size/1.7+1, size/2, count1);	//|
+		glcd_draw_circle(size/1.7, size/2+1, count1);	//|Draw multiple Circles to ensure solid color
+		glcd_draw_circle(size/1.7, size/2-1, count1);	//|
+		glcd_draw_circle(size/1.7-1, size/2, count1);	//|
+		glcd_draw_circle(size/1.7, size/2, count1);		//|
 	}
+	//==================================================================
 	
 	TotalTime = 0;
 	
+	//Calculate TotalTime
+	//==================================================================
 	for (count1 = 0; count1 < TaskCount; count1++)
 	{
 		TaskList[count1].Seconds = (((TaskList[count1].time[0] * 60) + TaskList[count1].time[1]) * 60) + TaskList[count1].time[2];
 		TotalTime += TaskList[count1].Seconds;
 	}
+	//==================================================================
 	
-	IsPaused = 1;
-	Time = 0;
+	temp = 0;	//set temp to 0
+	
+	//Draw Total Bar
+	//==================================================================
 	for (count1 = 0; count1 < TaskCount; count1++)
 	{
-		Time += TaskList[count1].Seconds;
-		PosY = (((size - BarHeight)) + (BarHeight - (BarHeight * ((float)Time / TotalTime))));
-		MoveTo(0,PosY);
-		fore = Colour(TaskList[count1].Colour[0], TaskList[count1].Colour[1], TaskList[count1].Colour[2]);
-		FillRect(BarWidth, round(BarHeight * ((float)TaskList[count1].Seconds / TotalTime)));
+		temp += TaskList[count1].Seconds;	//add Seconds to temp
+		PosY = (((size - BarHeight)) + (BarHeight - (BarHeight * ((float)temp / TotalTime))));	//Calculate vertical Position
+		MoveTo(0,PosY);	//Move to starting position
+		fore = Colour(TaskList[count1].Colour[0], TaskList[count1].Colour[1], TaskList[count1].Colour[2]);	//Set fore color to the coresponding Colour of the coresponding Task 
+		FillRect(BarWidth, round(BarHeight * ((float)TaskList[count1].Seconds / TotalTime)));	//Draw bar segment
 	}
-	Time = 0;
+	//==================================================================
 	
-	count1 = -1;
-	target = 0;
+	count1 = -1;	//Set count1 to -1
+	target = 0;	//Set target to 0
+	
+	IsPaused = 1;
+	Time = 0;	//Set Time to 0
+	
+	while(!T1 && !T2 && !T3);	//Wait for user Input before starting Timer
 	
 	while (1)
 	{
-		if(Time != LastTime)
+		if(Time != LastTime)	//Check if Display needs to be updated
 		{
-			LastTime = Time;
-			fore = BLACK;
-			PosY = (((size - BarHeight)) + (BarHeight - (BarHeight * ((float)Time / TotalTime))));
-			MoveTo(0,PosY);
-			FillRect(BarWidth, 10);
+			LastTime = Time;	//Set LastTime equal to Time
+			fore = BLACK;	//Set fore colour to Black
+			PosY = (((size - BarHeight)) + (BarHeight - (BarHeight * ((float)Time / TotalTime))));	//Calculate vertical Position
+			MoveTo(0,PosY);	//Move to start Position
+			FillRect(BarWidth, 10);	//Draw over Part of Total Bar
+			
+			//Erase part of CircleBar
+			//==========================================================
 			for (count2 = 360; count2 > 360 * (1-(((float)Time - (target - TaskList[count1].Seconds)) / TaskList[count1].Seconds)); count2 -= 3)
 			{
 				MoveTo(40 * cos((count2 + 180) * (M_PI / 180)) + size/1.7, 40 * sin(count2 * (M_PI / 180)) + size/2);
 				DrawTo(50 * cos((count2 + 180) * (M_PI / 180)) + size/1.7, 45 * sin(count2 * (M_PI / 180)) + size/2);
 			}
-			fore = WHITE;
-			MoveTo(0, 8);
-			sprintf(buffer, "%02d:%02d:%02d", (uint8_t)(target - Time)/3600, (uint8_t)((target - Time)/60)%60, (uint8_t)(target - Time)%60);
-			PlotString(buffer);
-			if (Time == target)
+			//==========================================================
+			
+			//Draw Remaing time of curent task
+			//==========================================================
+			fore = WHITE;	//Set fore Colour to white
+			MoveTo(0, 8);	//Move to position
+			sprintf(buffer, "%02d:%02d:%02d", (uint8_t)(target - Time)/3600, (uint8_t)((target - Time)/60)%60, (uint8_t)(((target - Time)%3600)%60)); //Load output into buffer
+			PlotString(buffer);	//Draw buffer on display
+			//==========================================================
+			
+			if (Time == target)	//Check if target time has been reached
 			{
-				if(Time != TotalTime)
+				if(Time != TotalTime)	//Check if there are still more Tasks
 				{
-					count1++;
-					target += TaskList[count1].Seconds;
-					fore = Colour(TaskList[count1].Colour[0], TaskList[count1].Colour[1], TaskList[count1].Colour[2]);
-					MoveTo(0,0);
-					PlotString("                             ");
-					MoveTo(0,0);
-					PlotString(TaskList[count1].Name);
+					count1++;	//increase count1 by 1 to go to nexht Task
+					target += TaskList[count1].Seconds;	//Add duration of new Task to target Time
+					fore = Colour(TaskList[count1].Colour[0], TaskList[count1].Colour[1], TaskList[count1].Colour[2]); //set fore colour to colour of Task
+					MoveTo(0,0);	//Move to Position
+					PlotString("                             ");	//Erase previous Name
+					MoveTo(0,0);	//Move to Position
+					PlotString(TaskList[count1].Name);	//Draw Name of current task
+					
+					//Draw Circle Bar
+					//==================================================
 					for (count2 = 0; count2 < 360; count2 += 3)
 					{
 						MoveTo(40 * cos((count2 + 180) * (M_PI / 180)) + size/1.7, 40 * sin(count2 * (M_PI / 180)) + size/2);
 						DrawTo(50 * cos((count2 + 180) * (M_PI / 180)) + size/1.7, 45 * sin(count2 * (M_PI / 180)) + size/2);
 					}
-					IsPaused = 0;
+					//==================================================
+					IsPaused = 0;	//Unpause Timer
 				}
 				else
 				{
-					fore = RED;
+					fore = RED;	//Set fore color to red
 					for(count1 = 0; count1 < size; count1++)
 					{
 						for(count2 = 0; count2 <= count1; count2++)
 						{
+							//Fill screen diagonaly with fore color
+							//==========================================
 							PlotPoint(count2 + count1, count1 - count2);
 							PlotPoint(count2 + count1 - 1, count1 - count2);
 							PlotPoint(count1 - count2, count2 + count1);
 							PlotPoint(count1 - count2, count2 + count1 - 1);
+							//==========================================
 						}
 					}
 					return 0;
